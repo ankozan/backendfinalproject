@@ -89,19 +89,7 @@ app.get('/states/:state', async (req, res) => {
     }
 });
 
-// Route to get data for a specific state
-// app.get('/states/:state', (req, res) => {
-//     const stateCode = req.params.state.toUpperCase();
-//     const stateData = states.find(state => state.code === stateCode);
 
-//     if (stateData) {
-//         const formattedData = JSON.stringify(stateData, null, 2);
-//         res.set('Content-Type', 'application/json');
-//         res.send(formattedData);
-//     } else {
-//         res.status(404).send('State not found');
-//     }
-// });
 
 app.get('/states/:state/funfact', async (req, res) => {
     connectToDB();
@@ -121,19 +109,24 @@ app.get('/states/:state/funfact', async (req, res) => {
 });
 
 app.get('/states/:state/capital', async (req, res) => {
+    await getStatesWithFunFacts();
 
+    let filteredArray
     const stateCode = req.params.state.toUpperCase();
-    const stateData = states.find(state => state.code === stateCode);
+    console.log(stateCode);
+    let state = statesWithFunFacts.find(state => state.code === stateCode);
 
-    if (stateData) {
-        const formattedData = JSON.stringify(stateData.capital, null, 2);
+    if (state) {
+        const formattedData = JSON.stringify({
+            state: state.state,
+            capital: state.capital_city
+        }, null);
         res.set('Content-Type', 'application/json');
         res.send(formattedData);
     } else {
         res.status(404).send('State not found');
     }
 });
-
 
 app.get('/', async (req, res) => {
     try {
