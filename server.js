@@ -45,23 +45,18 @@ run().catch(console.dir);
 
 app.get('/states', async (req, res) => {
     try {
-
         const path = req.path;
         const contig = req.query.contig === 'true';
         let filteredArray;
 
         if (path === '/states') {
-            // All state data returned
             filteredArray = statesWithFunFacts;
-            if (path === '/states' && contig) {
-                // All state data for contiguous states (not AK or HI)
+            if (path === '/states' && req.query.contig === 'true') {
                 filteredArray = statesWithFunFacts.filter(state => state.code !== 'AK' && state.code !== 'HI');
-            } else if (path === '/states' && !contig) {
-                // All state data including AK and HI
+            } else if (path === '/states' && req.query.contig === 'false') {
                 filteredArray = statesWithFunFacts.filter(state => state.code === 'AK' || state.code === 'HI');
             }
         } else {
-            // Invalid path or query parameter
             res.status(404).send('Page not found');
             return;
         }
@@ -78,19 +73,22 @@ app.get('/states', async (req, res) => {
 });
 
 
-// Route to get data for a specific state
-// app.get('/states/:state', (req, res) => {
-//     const stateCode = req.params.state.toUpperCase();
-//     const stateData = states.find(state => state.code === stateCode);
+app.get('/states/:state', async (req, res) => {
+    connectToDB();
 
-//     if (stateData) {
-//         const formattedData = JSON.stringify(stateData, null, 2);
-//         res.set('Content-Type', 'application/json');
-//         res.send(formattedData);
-//     } else {
-//         res.status(404).send('State not found');
-//     }
-// });
+    const stateCode = req.params.state.toUpperCase();
+    const stateData = await States.findOne({ stateCode: stateCode });
+
+    if (stateData) {
+        const formattedData = JSON.stringify(stateData.funfacts[Math.floor(Math.random() * stateData.funfacts.length)], null, 2);
+        res.set('Content-Type', 'application/json');
+        res.send(formattedData);
+    } else {
+        res.status(404).send('State not found');
+    }
+
+    disconnectToDB();
+});
 
 app.get('/states/:state', (req, res) => {
     const stateCode = req.params.state.toUpperCase();
