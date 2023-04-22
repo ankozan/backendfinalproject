@@ -73,7 +73,7 @@ app.get('/states', async (req, res) => {
 });
 
 
-app.get('/states/:state', async (req, res) => {
+app.get('/states/:state/funfact', async (req, res) => {
     connectToDB();
 
     const stateCode = req.params.state.toUpperCase();
