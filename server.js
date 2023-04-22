@@ -21,7 +21,7 @@ const client = new MongoClient(uri, {
     }
 });
 let statesWithFunFacts;
-
+let states;
 async function getStatesWithFunFacts() {
     connectToDB();
     const statesData = require('./statesData.json');
@@ -39,14 +39,13 @@ async function getStatesWithFunFacts() {
 }
 
 async function run() {
-    getStatesWithFunFacts();
+    await getStatesWithFunFacts();
 }
 run().catch(console.dir);
 
 app.get('/states', async (req, res) => {
     try {
         const path = req.path;
-        const contig = req.query.contig === 'true';
         let filteredArray;
 
         if (path === '/states') {
@@ -73,6 +72,37 @@ app.get('/states', async (req, res) => {
 });
 
 
+app.get('/states/:state', async (req, res) => {
+    await getStatesWithFunFacts();
+
+    let filteredArray
+    const stateCode = req.params.state.toUpperCase();
+    console.log(stateCode);
+    filteredArray = statesWithFunFacts.find(state => state.code === stateCode);
+
+    if (filteredArray) {
+        const formattedData = JSON.stringify(filteredArray, null, 2);
+        res.set('Content-Type', 'application/json');
+        res.send(formattedData);
+    } else {
+        res.status(404).send('State not found');
+    }
+});
+
+// Route to get data for a specific state
+// app.get('/states/:state', (req, res) => {
+//     const stateCode = req.params.state.toUpperCase();
+//     const stateData = states.find(state => state.code === stateCode);
+
+//     if (stateData) {
+//         const formattedData = JSON.stringify(stateData, null, 2);
+//         res.set('Content-Type', 'application/json');
+//         res.send(formattedData);
+//     } else {
+//         res.status(404).send('State not found');
+//     }
+// });
+
 app.get('/states/:state/funfact', async (req, res) => {
     connectToDB();
 
@@ -90,12 +120,13 @@ app.get('/states/:state/funfact', async (req, res) => {
     disconnectToDB();
 });
 
-app.get('/states/:state', (req, res) => {
+app.get('/states/:state/capital', async (req, res) => {
+
     const stateCode = req.params.state.toUpperCase();
     const stateData = states.find(state => state.code === stateCode);
 
     if (stateData) {
-        const formattedData = JSON.stringify(stateData, null, 2);
+        const formattedData = JSON.stringify(stateData.capital, null, 2);
         res.set('Content-Type', 'application/json');
         res.send(formattedData);
     } else {
