@@ -14,10 +14,10 @@
         */states/?contig=false All state data for non-contiguous states (AK, HI)
         */states/:state All data for the state URL parameter
         */states/:state/funfact A random fun fact for the state URL parameter
-        /states/:state/capital { ‘state’: stateName, ‘capital’: capitalName }
-        /states/:state/nickname { ‘state’: stateName, ‘nickname’: nickname }
-        /states/:state/population { ‘state’: stateName, ‘population’: population }
-        /states/:state/admission { ‘state’: stateName, ‘admitted’: admissionDate }
+        */states/:state/capital { ‘state’: stateName, ‘capital’: capitalName }
+        */states/:state/nickname { ‘state’: stateName, ‘nickname’: nickname }
+        */states/:state/population { ‘state’: stateName, ‘population’: population }
+        */states/:state/admission { ‘state’: stateName, ‘admitted’: admissionDate }
         GET routes:
         1) If you have a catch all for routes that do not exist in your server, you will not need to check if
             URL parameters exist. If they are entered wrong, the response will be a 404.
