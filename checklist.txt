@@ -19,15 +19,15 @@
         */states/:state/population { ‘state’: stateName, ‘population’: population }
         */states/:state/admission { ‘state’: stateName, ‘admitted’: admissionDate }
         GET routes:
-        1) If you have a catch all for routes that do not exist in your server, you will not need to check if
+        *1) If you have a catch all for routes that do not exist in your server, you will not need to check if
             URL parameters exist. If they are entered wrong, the response will be a 404.
-        2) The :state URL parameter above represents state codes like KS, NE, TX, NY, etc. Entering in
+        *2) The :state URL parameter above represents state codes like KS, NE, TX, NY, etc. Entering in
             full state names should result in a 404.
-        3) Check the example application to verify the exact responses expected.
-        4) Also check the example application for expected messages when required parameters are not
+        *3) Check the example application to verify the exact responses expected.
+        *4) Also check the example application for expected messages when required parameters are not
             received or no fun facts are found for a requested state.
-        5) Notice contig above is a query parameter where :state is a URL parameter.
-        6) “All state data means all state data from statesData.json merged with the fun facts stored in
+        *5) Notice contig above is a query parameter where :state is a URL parameter.
+        *6) “All state data means all state data from statesData.json merged with the fun facts stored in
             MongoDB. 
     7)POST request
         /states/:state/funfact - > The result received from MongoDB
