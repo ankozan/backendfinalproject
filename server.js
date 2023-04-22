@@ -12,7 +12,6 @@ const States = require('./models/States');
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = "mongodb+srv://alinail13ank:Reset123@cluster0.2h2iqyk.mongodb.net/test";
-
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
     serverApi: {
@@ -21,59 +20,64 @@ const client = new MongoClient(uri, {
         deprecationErrors: true,
     }
 });
-const statesData = fs.readFileSync('./statesData.json');
-const states = JSON.parse(statesData);
+let statesWithFunFacts;
+
+async function getStatesWithFunFacts() {
+    connectToDB();
+    const statesData = require('./statesData.json');
+    const stateCodes = statesData.map((state) => state.code);
+
+    const dbStates = await Promise.all(
+        stateCodes.map((stateCode) => States.findOne({ stateCode }))
+    );
+
+    statesWithFunFacts = statesData.map((state, index) => {
+        const dbState = dbStates[index];
+        const funFacts = dbState ? dbState.funfacts : [];
+        return { ...state, funfacts: funFacts };
+    });
+}
+
 async function run() {
-    try {
-        // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
-        // Send a ping to confirm a successful connection
-        await client.db("admin").command({ ping: 1 });
-
-
-    } finally {
-        // Ensures that the client will close when you finish/error
-        await client.close();
-    }
+    getStatesWithFunFacts();
 }
 run().catch(console.dir);
 
 app.get('/states', async (req, res) => {
     try {
-        const statesData = require('./statesData.json');
-        const stateCodes = statesData.map((state) => state.code);
 
-        const dbStates = await Promise.all(
-            stateCodes.map((stateCode) => States.findOne({ stateCode }))
-        );
+        const path = req.path;
+        const contig = req.query.contig === 'true';
+        let filteredArray;
 
-        const statesWithFunFacts = statesData.map((state, index) => {
-            const dbState = dbStates[index];
-            const funFacts = dbState ? dbState.funfacts : [];
-            return { ...state, funfacts: funFacts };
-        });
+        if (path === '/states') {
+            // All state data returned
+            filteredArray = statesWithFunFacts;
+            if (path === '/states' && contig) {
+                // All state data for contiguous states (not AK or HI)
+                filteredArray = statesWithFunFacts.filter(state => state.code !== 'AK' && state.code !== 'HI');
+            } else if (path === '/states' && !contig) {
+                // All state data including AK and HI
+                filteredArray = statesWithFunFacts.filter(state => state.code === 'AK' || state.code === 'HI');
+            }
+        } else {
+            // Invalid path or query parameter
+            res.status(404).send('Page not found');
+            return;
+        }
 
-        res.json(statesWithFunFacts);
+        const formattedData = JSON.stringify(filteredArray, null, 2);
+        res.set('Content-Type', 'application/json');
+        res.send(formattedData);
     } catch (err) {
         console.error(err);
         res.status(500).send('Server Error');
     } finally {
-        await mongoose.connection.close();
+        disconnectToDB();
     }
 });
 
-app.get('states/:contig', (req, res) => {
-    const stateCode = req.params.state.toUpperCase();
-    const stateData = states.find(state => state.code === stateCode);
 
-    if (stateData) {
-        const formattedData = JSON.stringify(stateData, null, 2);
-        res.set('Content-Type', 'application/json');
-        res.send(formattedData);
-    } else {
-        res.status(404).send('State not found');
-    }
-});
 // Route to get data for a specific state
 // app.get('/states/:state', (req, res) => {
 //     const stateCode = req.params.state.toUpperCase();
@@ -133,5 +137,26 @@ app.get('/statefind', async (req, res) => {
         await mongoose.connection.close();
     }
 })
+
+async function connectToDB() {
+    try {
+        await client.connect();
+        await client.db("admin").command({ ping: 1 });
+    } catch (err) {
+        console.error(err);
+    }
+}
+async function disconnectToDB() {
+    try {
+        await client.close();
+        console.info('Disconnected from MongoDB');
+
+    }
+    catch (err) {
+        console.error(err);
+    }
+}
+
+
 
 app.listen(3000);
