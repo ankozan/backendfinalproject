@@ -13,7 +13,7 @@
         */states/?contig=true All state data for contiguous states (Not AK or HI)
         */states/?contig=false All state data for non-contiguous states (AK, HI)
         */states/:state All data for the state URL parameter
-        /states/:state/funfact A random fun fact for the state URL parameter
+        */states/:state/funfact A random fun fact for the state URL parameter
         /states/:state/capital { ‘state’: stateName, ‘capital’: capitalName }
         /states/:state/nickname { ‘state’: stateName, ‘nickname’: nickname }
         /states/:state/population { ‘state’: stateName, ‘population’: population }
