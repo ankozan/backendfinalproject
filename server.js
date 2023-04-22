@@ -128,6 +128,66 @@ app.get('/states/:state/capital', async (req, res) => {
     }
 });
 
+app.get('/states/:state/nickname', async (req, res) => {
+    await getStatesWithFunFacts();
+
+    let filteredArray
+    const stateCode = req.params.state.toUpperCase();
+    console.log(stateCode);
+    let state = statesWithFunFacts.find(state => state.code === stateCode);
+
+    if (state) {
+        const formattedData = JSON.stringify({
+            state: state.state,
+            nickname: state.nickname
+        }, null);
+        res.set('Content-Type', 'application/json');
+        res.send(formattedData);
+    } else {
+        res.status(404).send('State not found');
+    }
+});
+
+app.get('/states/:state/population', async (req, res) => {
+    await getStatesWithFunFacts();
+
+    let filteredArray
+    const stateCode = req.params.state.toUpperCase();
+    console.log(stateCode);
+    let state = statesWithFunFacts.find(state => state.code === stateCode);
+
+    if (state) {
+        const formattedData = JSON.stringify({
+            state: state.state,
+            population: state.population
+        }, null);
+        res.set('Content-Type', 'application/json');
+        res.send(formattedData);
+    } else {
+        res.status(404).send('State not found');
+    }
+});
+
+app.get('/states/:state/admission', async (req, res) => {
+    await getStatesWithFunFacts();
+
+    let filteredArray
+    const stateCode = req.params.state.toUpperCase();
+    console.log(stateCode);
+    let state = statesWithFunFacts.find(state => state.code === stateCode);
+
+    if (state) {
+        const formattedData = JSON.stringify({
+            state: state.state,
+            admitted: state.admission_date
+        }, null);
+        res.set('Content-Type', 'application/json');
+        res.send(formattedData);
+    } else {
+        res.status(404).send('State not found');
+    }
+});
+
 app.get('/', async (req, res) => {
     try {
         const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
