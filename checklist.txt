@@ -31,10 +31,10 @@
             MongoDB. 
     7)POST request
         /states/:state/funfact - > The result received from MongoDB
-        1) The body of this POST request should contain a “funfacts” property providing an array
+        *1) The body of this POST request should contain a “funfacts” property providing an array
             providing one or more fun facts about the state. It should be possible to post all of your fun facts
             about a state with one POST request.
-        2) If the state already has some fun facts saved, submitting a POST request should add to those
+        *2) If the state already has some fun facts saved, submitting a POST request should add to those
             fun facts and not delete the pre-existing data.
         3) We are not indexing fun facts or trying to determine if they already exist. Duplicate entries in the
             funfacts array should be avoided but are possible.

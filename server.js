@@ -3,7 +3,11 @@ const app = express()
 const mongoose = require('mongoose');
 const fs = require('fs');
 const States = require('./models/States');
+const bodyParser = require('body-parser');
 
+// Use the body-parser middleware to parse incoming request bodies
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // Load states data from JSON file
 
@@ -173,6 +177,37 @@ app.get('/states/:state/funfact', async (req, res) => {
         res.status(404).send('State not found');
     }
 
+    disconnectToDB();
+});
+
+//POSTs
+app.post('/states/:state/funfact', async (req, res) => {
+    try {
+        connectToDB();
+        console.log(req.body.funfacts);
+        const stateCode = req.params.state.toUpperCase();
+        const newFunFacts = req.body.funfacts;
+
+        // Find the state in the database
+        let stateData = await States.findOne({ stateCode });
+
+        if (!stateData) {
+            stateData = new States({ stateCode: stateCode, funfacts: newFunFacts });
+        }
+
+        // Add the new fun facts to the existing array
+        stateData.funfacts.push(...newFunFacts);
+
+        // Save the updated state document to the database
+        await stateData.save();
+
+        // Return a success message
+        res.status(201).send(`Added ${newFunFacts.length} fun facts for ${stateData.state}`);
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Internal Server Error');
+    }
     disconnectToDB();
 });
 
