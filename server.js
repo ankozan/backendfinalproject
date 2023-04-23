@@ -199,10 +199,10 @@ app.post('/states/:state/funfact', async (req, res) => {
         stateData.funfacts.push(...newFunFacts);
 
         // Save the updated state document to the database
-        await stateData.save();
+        stateData = await stateData.save();
 
-        // Return a success message
-        res.status(201).send(`Added ${newFunFacts.length} fun facts for ${stateData.state}`);
+        // Return the updated or new state document as the response
+        res.status(201).send(stateData);
 
     } catch (err) {
         console.error(err);
