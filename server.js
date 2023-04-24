@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const fs = require('fs');
 const States = require('./models/States');
 const bodyParser = require('body-parser');
+const path = require('path');
 
 // Use the body-parser middleware to parse incoming request bodies
 app.use(bodyParser.json());
@@ -102,6 +103,9 @@ async function run() {
 run().catch(console.dir);
 
 
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 app.get('/states', async (req, res) => {
     try {
