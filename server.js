@@ -211,6 +211,48 @@ app.post('/states/:state/funfact', async (req, res) => {
     disconnectToDB();
 });
 
+app.patch('/states/:state/funfact', async (req, res) => {
+    try {
+        const stateCode = req.params.state.toUpperCase();
+        const { index, funfact } = req.body;
+
+        // Check if the required properties are present in the request body
+        if (!index || !funfact) {
+            return res.status(400).send('Index and funfact are required');
+        }
+
+        // Convert the index to zero-based by subtracting 1
+        const zeroBasedIndex = index - 1;
+
+        // Find the state in the database
+        const stateData = await States.findOne({ stateCode });
+
+        // If state is not found, return a 404 error
+        if (!stateData) {
+            return res.status(404).send('State not found');
+        }
+
+        // Replace the existing fun fact with the new one at the specified index
+        const funfacts = stateData.funfacts;
+        if (zeroBasedIndex >= 0 && zeroBasedIndex < funfacts.length) {
+            funfacts[zeroBasedIndex] = funfact;
+        } else {
+            return res.status(400).send('Invalid index');
+        }
+
+        // Save the updated state document to the database
+        const updatedState = await stateData.save();
+
+        // Return the updated state document as the response
+        res.send(updatedState);
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+
 app.get('/states/:state/capital', async (req, res) => {
     await getStatesWithFunFacts();
 
