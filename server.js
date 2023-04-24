@@ -5,6 +5,7 @@ const fs = require('fs');
 const States = require('./models/States');
 const bodyParser = require('body-parser');
 const path = require('path');
+const cors = require('cors');
 
 // Use the body-parser middleware to parse incoming request bodies
 app.use(bodyParser.json());
@@ -103,11 +104,11 @@ async function run() {
 run().catch(console.dir);
 
 
-app.get('/', (req, res) => {
+app.get('/', cors(), (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.get('/states', async (req, res) => {
+app.get('/states', cors(), async (req, res) => {
     try {
         const path = req.path;
         let filteredArray;
@@ -136,7 +137,7 @@ app.get('/states', async (req, res) => {
 });
 
 
-app.get('/states/:state', async (req, res) => {
+app.get('/states/:state', cors(), async (req, res) => {
     await getStatesWithFunFacts();
     let filteredArray
     const stateCode = req.params.state.toUpperCase();
@@ -160,7 +161,7 @@ app.get('/states/:state', async (req, res) => {
 
 
 
-app.get('/states/:state/funfact', async (req, res) => {
+app.get('/states/:state/funfact', cors(), async (req, res) => {
     connectToDB();
     await getStatesWithFunFacts();
 
@@ -185,7 +186,7 @@ app.get('/states/:state/funfact', async (req, res) => {
 });
 
 //POSTs
-app.post('/states/:state/funfact', async (req, res) => {
+app.post('/states/:state/funfact', cors(), async (req, res) => {
     try {
         connectToDB();
         console.log(req.body.funfacts);
@@ -215,7 +216,7 @@ app.post('/states/:state/funfact', async (req, res) => {
     disconnectToDB();
 });
 
-app.patch('/states/:state/funfact', async (req, res) => {
+app.patch('/states/:state/funfact', cors(), async (req, res) => {
     try {
         const stateCode = req.params.state.toUpperCase();
         const { index, funfact } = req.body;
@@ -274,7 +275,7 @@ app.delete('/states/:state/funfact', async (req, res) => {
     res.status(200).send(updatedState);
 });
 
-app.get('/states/:state/capital', async (req, res) => {
+app.get('/states/:state/capital', cors(), async (req, res) => {
     await getStatesWithFunFacts();
 
     let filteredArray
@@ -294,7 +295,7 @@ app.get('/states/:state/capital', async (req, res) => {
     }
 });
 
-app.get('/states/:state/nickname', async (req, res) => {
+app.get('/states/:state/nickname', cors(), async (req, res) => {
     await getStatesWithFunFacts();
 
     let filteredArray
@@ -314,7 +315,7 @@ app.get('/states/:state/nickname', async (req, res) => {
     }
 });
 
-app.get('/states/:state/population', async (req, res) => {
+app.get('/states/:state/population', cors(), async (req, res) => {
     await getStatesWithFunFacts();
 
     let filteredArray
@@ -334,7 +335,7 @@ app.get('/states/:state/population', async (req, res) => {
     }
 });
 
-app.get('/states/:state/admission', async (req, res) => {
+app.get('/states/:state/admission', cors(), async (req, res) => {
     await getStatesWithFunFacts();
 
     let filteredArray
@@ -360,7 +361,7 @@ app.get('*', (req, res) => {
 
 
 
-app.get('/statefind', async (req, res) => {
+app.get('/statefind', cors(), async (req, res) => {
     try {
         const states = await States.find({ stateCode: 'KS' });
         res.send(states);
@@ -382,6 +383,7 @@ async function connectToDB() {
 }
 async function disconnectToDB() {
     try {
+        setTimeout(() => { client.close() }, 1500)
         await client.close();
         console.info('Disconnected from MongoDB');
 
