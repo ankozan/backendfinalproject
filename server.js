@@ -258,7 +258,7 @@ app.patch('/states/:state/funfact', cors(), async (req, res) => {
     }
 });
 
-app.delete('/states/:state/funfact', async (req, res) => {
+app.delete('/states/:state/funfact', cors(), async (req, res) => {
     const stateCode = req.params.state.toUpperCase();
     const index = req.body.index;
     if (!index || index <= 0 || index > stateData.funfacts.length) {
