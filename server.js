@@ -122,7 +122,7 @@ app.get('/', (req, res) => {
         </style>
     </head>
     <body>
-        Final Project
+        Final Project 2
     </body>
     </html>
   `;
