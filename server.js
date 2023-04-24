@@ -104,9 +104,6 @@ async function run() {
 run().catch(console.dir);
 
 
-app.get('*', (req, res) => {
-    res.status(404).sendFile(path.join(__dirname, '404.html'));
-});
 
 app.get('/', cors(), (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
@@ -360,9 +357,8 @@ app.get('/states/:state/admission', cors(), async (req, res) => {
 });
 
 app.get('*', (req, res) => {
-    res.status(404).send('<h1>404<h1>');
+    res.status(404).sendFile(path.join(__dirname, '404.html'));
 });
-
 
 
 app.get('/statefind', cors(), async (req, res) => {
