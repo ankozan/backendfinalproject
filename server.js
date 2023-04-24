@@ -252,6 +252,23 @@ app.patch('/states/:state/funfact', async (req, res) => {
     }
 });
 
+app.delete('/states/:state/funfact', async (req, res) => {
+    const stateCode = req.params.state.toUpperCase();
+    const index = req.body.index;
+
+    const stateData = await States.findOne({ stateCode });
+    if (!stateData) {
+        return res.status(404).send('State not found');
+    }
+    if (!index || index <= 0 || index > stateData.funfacts.length) {
+        return res.status(400).send('Invalid index');
+    }
+
+    stateData.funfacts.splice(index - 1, 1);
+    const updatedState = await stateData.save();
+
+    res.status(200).send(updatedState);
+});
 
 app.get('/states/:state/capital', async (req, res) => {
     await getStatesWithFunFacts();

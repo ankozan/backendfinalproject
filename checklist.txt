@@ -40,18 +40,18 @@
             funfacts array should be avoided but are possible.
     8)PATCH request
         /states/:state/funfact -> The result received from MongoDB
-        1) The body of the PATCH submission MUST contain the index of the funfacts array element to
+       * 1) The body of the PATCH submission MUST contain the index of the funfacts array element to
             replace and the new fun fact. Required request body properties: index and funfact
-        2) The index parameter value should not be zero-based. This will allow you to check if the index is
+        *2) The index parameter value should not be zero-based. This will allow you to check if the index is
             sent: if (!index)
      9)DELETE request   
         /states/:state/funfact -> The result received from MongoDB
-        1) The body of the DELETE submission MUST contain the index of the funfacts array element to
+        *1) The body of the DELETE submission MUST contain the index of the funfacts array element to
             remove. Required request body property: index
-        2) The index parameter value should not be zero-based. This will allow you to check if the index is
+        *2) The index parameter value should not be zero-based. This will allow you to check if the index is
             sent: if (!index) etc. …afterwards, you should subtract 1 to adjust for the data array which is
             zero-based.
-    10) Your project should have a GitHub repository.
+    *10) Your project should have a GitHub repository.
     11) Submit the following:
         a) A link to your GitHub code repository (no code updates after the due date accepted)
         b) A link to your deployed project
