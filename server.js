@@ -104,29 +104,7 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-    const html = `
-    <!DOCTYPE html>
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Final Project</title>
-        <style>
-            body {
-                background-color: black;
-                color: white;
-                text-align: center;
-                font-size: 36px;
-                font-weight: bold;
-                padding-top: 20%;
-            }
-        </style>
-    </head>
-    <body>
-        Final Project 3
-    </body>
-    </html>
-  `;
-    res.send(html);
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.get('/states', async (req, res) => {
@@ -141,11 +119,17 @@ app.get('/states', async (req, res) => {
             } else if (path === '/states' && req.query.contig === 'false') {
                 filteredArray = statesWithFunFacts.filter(state => state.code === 'AK' || state.code === 'HI');
             }
+        } else {
+            res.status(404).send('Page not found');
+            return;
         }
 
         const formattedData = JSON.stringify(filteredArray, null, 2);
         res.set('Content-Type', 'application/json');
-        res.send(filteredArray);
+        res.send(formattedData);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
     } finally {
         disconnectToDB();
     }
