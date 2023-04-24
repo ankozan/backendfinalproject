@@ -141,9 +141,6 @@ app.get('/states', async (req, res) => {
             } else if (path === '/states' && req.query.contig === 'false') {
                 filteredArray = statesWithFunFacts.filter(state => state.code === 'AK' || state.code === 'HI');
             }
-        } else {
-            res.status(404).send('Page not found');
-            return;
         }
 
         const formattedData = JSON.stringify(filteredArray, null, 2);
@@ -151,7 +148,6 @@ app.get('/states', async (req, res) => {
         res.send(formattedData);
     } catch (err) {
         console.error(err);
-        res.status(500).send('Server Error');
     } finally {
         disconnectToDB();
     }
