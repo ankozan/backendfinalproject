@@ -104,8 +104,8 @@ async function run() {
 run().catch(console.dir);
 
 
-app.get('*', cors(), (req, res) => {
-    res.status(404).send('404: Page not found');
+app.get('*', (req, res) => {
+    res.status(404).sendFile(path.join(__dirname, '404.html'));
 });
 
 app.get('/', cors(), (req, res) => {
