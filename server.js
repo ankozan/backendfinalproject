@@ -104,7 +104,29 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    const html = `
+    <!DOCTYPE html>
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Final Project</title>
+        <style>
+            body {
+                background-color: black;
+                color: white;
+                text-align: center;
+                font-size: 36px;
+                font-weight: bold;
+                padding-top: 20%;
+            }
+        </style>
+    </head>
+    <body>
+        Final Project
+    </body>
+    </html>
+  `;
+    res.send(html);
 });
 
 app.get('/states', async (req, res) => {
