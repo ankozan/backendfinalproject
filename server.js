@@ -261,14 +261,14 @@ app.patch('/states/:state/funfact', cors(), async (req, res) => {
 app.delete('/states/:state/funfact', async (req, res) => {
     const stateCode = req.params.state.toUpperCase();
     const index = req.body.index;
-
+    if (!index || index <= 0 || index > stateData.funfacts.length) {
+        return res.status(400).json({ message: 'State fun fact index value required' });
+    }
     const stateData = await States.findOne({ stateCode });
     if (!stateData) {
         return res.status(404).send('State not found');
     }
-    if (!index || index <= 0 || index > stateData.funfacts.length) {
-        return res.status(400).send('Invalid index');
-    }
+
 
     stateData.funfacts.splice(index - 1, 1);
     const updatedState = await stateData.save();
@@ -361,17 +361,6 @@ app.get('*', (req, res) => {
 });
 
 
-app.get('/statefind', cors(), async (req, res) => {
-    try {
-        const states = await States.find({ stateCode: 'KS' });
-        res.send(states);
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Server Error');
-    } finally {
-        await mongoose.connection.close();
-    }
-})
 
 async function connectToDB() {
     try {
