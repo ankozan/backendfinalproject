@@ -145,9 +145,7 @@ app.get('/states', async (req, res) => {
 
         const formattedData = JSON.stringify(filteredArray, null, 2);
         res.set('Content-Type', 'application/json');
-        res.send(formattedData);
-    } catch (err) {
-        console.error(err);
+        res.send(filteredArray);
     } finally {
         disconnectToDB();
     }
