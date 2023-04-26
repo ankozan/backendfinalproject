@@ -116,10 +116,10 @@ app.get('/states/', cors(), async (req, res) => {
 
         if (path === '/states/') {
             filteredArray = statesWithFunFacts;
-            if (path === '/states' && req.query.contig === 'true') {
-                filteredArray = statesWithFunFacts.filter(state => state.code !== 'AK' && state.code !== 'HI');
-            } else if (path === '/states' && req.query.contig === 'false') {
-                filteredArray = statesWithFunFacts.filter(state => state.code === 'AK' || state.code === 'HI');
+            if (path === '/states/' && req.query.contig === 'true') {
+                filteredArray = filteredArray.filter(state => state.code !== 'AK' && state.code !== 'HI');
+            } else if (path === '/states/' && req.query.contig === 'false') {
+                filteredArray = filteredArray.filter(state => state.code === 'AK' || state.code === 'HI');
             }
         } else {
             res.status(404).send('Page not found');
