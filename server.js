@@ -109,12 +109,12 @@ app.get('/', cors(), (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.get('/states', cors(), async (req, res) => {
+app.get('/states/', cors(), async (req, res) => {
     try {
         const path = req.path;
         let filteredArray;
 
-        if (path === '/states') {
+        if (path === '/states/') {
             filteredArray = statesWithFunFacts;
             if (path === '/states' && req.query.contig === 'true') {
                 filteredArray = statesWithFunFacts.filter(state => state.code !== 'AK' && state.code !== 'HI');
