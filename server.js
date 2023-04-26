@@ -138,7 +138,7 @@ app.get('/states', cors(), async (req, res) => {
 });
 
 
-app.get('/states/:state', cors(), async (req, res) => {
+app.get('/states/:state', cors(), async (req, res, done) => {
     await getStatesWithFunFacts();
     let filteredArray
     const stateCode = req.params.state.toUpperCase();
@@ -153,14 +153,17 @@ app.get('/states/:state', cors(), async (req, res) => {
             const formattedData = JSON.stringify(filteredArray, null, 2);
             res.set('Content-Type', 'application/json');
             res.send(formattedData);
+            done();
         } else {
             res.status(404).send('State not found');
+            done();
         }
     } else {
         res.status(404).json({ "message": "Invalid state abbreviation parameter" });
-
+        done();
     }
 });
+
 
 
 
