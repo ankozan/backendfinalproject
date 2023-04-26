@@ -91,9 +91,6 @@ async function getStatesWithFunFacts() {
     const dbStates = await Promise.all(
         stateCodes.map((stateCode) => States.findOne({ stateCode }))
     );
-
-
-
     statesWithFunFacts = statesData.map((state, index) => {
         const dbState = dbStates[index];
         const funFacts = dbState ? dbState.funfacts : [];
@@ -145,7 +142,7 @@ app.get('/states/:state', cors(), async (req, res) => {
     await getStatesWithFunFacts();
     let filteredArray
     const stateCode = req.params.state.toUpperCase();
-    if (!(stateCode in stateAbbreviations)) {
+    if ((stateCode in stateAbbreviations)) {
 
         console.log(stateCode)
         filteredArray = statesWithFunFacts.find(state => state.code === stateCode);
