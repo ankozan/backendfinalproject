@@ -92,10 +92,12 @@ async function getStatesWithFunFacts() {
         stateCodes.map((stateCode) => States.findOne({ stateCode }))
     );
 
+
+
     statesWithFunFacts = statesData.map((state, index) => {
         const dbState = dbStates[index];
         const funFacts = dbState ? dbState.funfacts : [];
-        return { ...state, funfacts: funFacts };
+        return funFacts.length > 0 ? { ...state, funfacts: funFacts } : state;
     });
 }
 
