@@ -147,7 +147,7 @@ app.get('/states/:state', cors(), async (req, res) => {
 
     if ((stateCode in stateAbbreviations)) {
 
-        filteredArray = statesWithFunFacts.find(state => state.code === stateCode);
+        filteredArray = await statesWithFunFacts.find(state => state.code === stateCode);
 
         if (filteredArray) {
             const formattedData = JSON.stringify(filteredArray, null, 2);
