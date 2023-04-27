@@ -174,19 +174,23 @@ app.get('/states/:state/funfact', cors(), async (req, res) => {
     const stateCode = req.params.state.toUpperCase();
     const stateData = statesWithFunFacts.find(state => state.code === stateCode);
     if (stateData) {
-        if (stateData.funfacts.length > 0) {
-            const formattedData = stateData.funfacts[Math.floor(Math.random() * stateData.funfacts.length)];
-            const response = { funfact: formattedData };
-            res.set('Content-Type', 'application/json');
-            res.send(response);
+        if ('funfacts' in stateData) {
+
+            if (stateData.funfacts.length > 0) {
+                const formattedData = stateData.funfacts[Math.floor(Math.random() * stateData.funfacts.length)];
+                const response = { funfact: formattedData };
+                res.set('Content-Type', 'application/json');
+                res.send(response);
+            }
         }
         else {
-            res.status(404).send('No Fun Facts found for ' + stateData.state);
+            res.status(404).json({ message: 'No Fun Facts found for ' + stateData.state });
 
         }
 
     } else {
-        res.status(404).send('State not found');
+        res.status(404).json({ "message": "Invalid state abbreviation parameter" });
+        done();
     }
 
     disconnectToDB();
@@ -298,7 +302,8 @@ app.get('/states/:state/capital', cors(), async (req, res) => {
         res.set('Content-Type', 'application/json');
         res.send(formattedData);
     } else {
-        res.status(404).send('State not found');
+        res.status(404).json({ "message": "Invalid state abbreviation parameter" });
+        done();
     }
 });
 
@@ -318,7 +323,8 @@ app.get('/states/:state/nickname', cors(), async (req, res) => {
         res.set('Content-Type', 'application/json');
         res.send(formattedData);
     } else {
-        res.status(404).send('State not found');
+        res.status(404).json({ "message": "Invalid state abbreviation parameter" });
+        done();
     }
 });
 
@@ -338,7 +344,8 @@ app.get('/states/:state/population', cors(), async (req, res) => {
         res.set('Content-Type', 'application/json');
         res.send(formattedData);
     } else {
-        res.status(404).send('State not found');
+        res.status(404).json({ "message": "Invalid state abbreviation parameter" });
+        done();
     }
 });
 
@@ -358,7 +365,8 @@ app.get('/states/:state/admission', cors(), async (req, res) => {
         res.set('Content-Type', 'application/json');
         res.send(formattedData);
     } else {
-        res.status(404).send('State not found');
+        res.status(404).json({ "message": "Invalid state abbreviation parameter" });
+        done();
     }
 });
 
