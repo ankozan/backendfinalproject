@@ -175,9 +175,10 @@ app.get('/states/:state/funfact', cors(), async (req, res) => {
     const stateData = statesWithFunFacts.find(state => state.code === stateCode);
     if (stateData) {
         if (stateData.funfacts.length > 0) {
-            const formattedData = JSON.stringify(stateData.funfacts[Math.floor(Math.random() * stateData.funfacts.length)], null, 2);
+            const formattedData = stateData.funfacts[Math.floor(Math.random() * stateData.funfacts.length)];
+            const response = { funfact: formattedData };
             res.set('Content-Type', 'application/json');
-            res.send(formattedData);
+            res.send(response);
         }
         else {
             res.status(404).send('No Fun Facts found for ' + stateData.state);
