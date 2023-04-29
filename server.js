@@ -12,8 +12,19 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Load states data from JSON file
-
-
+const whitelist = ['https://www.google.com', 'http://localhost:3000', 'https://dazzling-snickerdoodle-777101.netlify.app']
+const corsOptions = {
+    origin: (origin, callback) => {
+        if (whitelist.indexOf(origin) !== -1) {
+            callback(null, true)
+        }
+        else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    optionSuccessStatus: 00
+}
+app.use(cors(corsOptions));
 // Connect to MongoDB database
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
@@ -192,7 +203,7 @@ app.get('/states/:state/funfact', cors(), async (req, res) => {
 });
 
 //POSTs
-app.post('/states/:state/funfact', cors(), async (req, res) => {
+app.post('/states/:state/funfact', async (req, res) => {
     try {
         console.log(req.body.funfacts);
         const stateCode = req.params.state.toUpperCase();
