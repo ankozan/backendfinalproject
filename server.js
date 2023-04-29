@@ -212,7 +212,7 @@ app.post('/states/:state/funfact', cors(), async (req, res) => {
         stateData = await stateData.save();
 
         // Return the updated or new state document as the response
-        res.status(201).send(stateData);
+        res.status(200).send(stateData);
 
     } catch (err) {
         console.error(err);
