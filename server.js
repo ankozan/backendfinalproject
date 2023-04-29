@@ -254,7 +254,6 @@ app.patch('/states/:state/funfact', cors(), async (req, res) => {
 
         // Return the updated state document as the response
         res.send(updatedState);
-        done();
 
     } catch (err) {
         console.error(err);
@@ -278,7 +277,6 @@ app.delete('/states/:state/funfact', cors(), async (req, res) => {
     const updatedState = await stateData.save();
 
     res.status(200).send(updatedState);
-    done();
 
 });
 
@@ -297,11 +295,9 @@ app.get('/states/:state/capital', cors(), async (req, res) => {
         }, null);
         res.set('Content-Type', 'application/json');
         res.send(formattedData);
-        done();
 
     } else {
         res.status(404).json({ "message": "Invalid state abbreviation parameter" });
-        done();
     }
 });
 
@@ -320,11 +316,9 @@ app.get('/states/:state/nickname', cors(), async (req, res) => {
         }, null);
         res.set('Content-Type', 'application/json');
         res.send(formattedData);
-        done();
 
     } else {
         res.status(404).json({ "message": "Invalid state abbreviation parameter" });
-        done();
     }
 });
 
@@ -343,11 +337,9 @@ app.get('/states/:state/population', cors(), async (req, res) => {
         }, null);
         res.set('Content-Type', 'application/json');
         res.send(formattedData);
-        done();
 
     } else {
         res.status(404).json({ "message": "Invalid state abbreviation parameter" });
-        done();
     }
 });
 
@@ -366,11 +358,9 @@ app.get('/states/:state/admission', cors(), async (req, res) => {
         }, null);
         res.set('Content-Type', 'application/json');
         res.send(formattedData);
-        done();
 
     } else {
         res.status(404).json({ "message": "Invalid state abbreviation parameter" });
-        done();
     }
 });
 
