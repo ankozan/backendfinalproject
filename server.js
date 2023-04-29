@@ -339,7 +339,7 @@ app.get('/states/:state/population', cors(), async (req, res) => {
     if (state) {
         const formattedData = JSON.stringify({
             state: state.state,
-            population: state.population.toLocaleString()
+            population: state.population
         }, null);
         res.set('Content-Type', 'application/json');
         res.send(formattedData);
