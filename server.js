@@ -99,6 +99,7 @@ async function getStatesWithFunFacts() {
 }
 
 async function run() {
+    console.log('i run first')
     await getStatesWithFunFacts();
 }
 run().catch(console.dir);
@@ -134,19 +135,13 @@ app.get('/states/', cors(), async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).send('Server Error');
-    } finally {
-        disconnectToDB();
     }
 });
 
 
 app.get('/states/:state', cors(), async (req, res, done) => {
-    await getStatesWithFunFacts();
     let filteredArray
     const stateCode = req.params.state.toUpperCase();
-    console.log(stateCode)
-    console.log(stateCode in stateAbbreviations)
-
     if ((stateCode in stateAbbreviations)) {
 
         filteredArray = await statesWithFunFacts.find(state => state.code === stateCode);
@@ -170,8 +165,6 @@ app.get('/states/:state', cors(), async (req, res, done) => {
 
 
 app.get('/states/:state/funfact', cors(), async (req, res) => {
-    connectToDB();
-    await getStatesWithFunFacts();
 
     const stateCode = req.params.state.toUpperCase();
     const stateData = await statesWithFunFacts.find(state => state.code === stateCode);
@@ -197,7 +190,6 @@ app.get('/states/:state/funfact', cors(), async (req, res) => {
         done();
     }
 
-    disconnectToDB();
 });
 
 //POSTs
@@ -229,7 +221,6 @@ app.post('/states/:state/funfact', cors(), async (req, res) => {
         console.error(err);
         res.status(500).send('Internal Server Error');
     }
-    disconnectToDB();
 });
 
 app.patch('/states/:state/funfact', cors(), async (req, res) => {
@@ -295,7 +286,6 @@ app.delete('/states/:state/funfact', cors(), async (req, res) => {
 });
 
 app.get('/states/:state/capital', cors(), async (req, res) => {
-    await getStatesWithFunFacts();
 
     let filteredArray
     const stateCode = req.params.state.toUpperCase();
@@ -318,7 +308,6 @@ app.get('/states/:state/capital', cors(), async (req, res) => {
 });
 
 app.get('/states/:state/nickname', cors(), async (req, res) => {
-    await getStatesWithFunFacts();
 
     let filteredArray
     const stateCode = req.params.state.toUpperCase();
@@ -341,7 +330,6 @@ app.get('/states/:state/nickname', cors(), async (req, res) => {
 });
 
 app.get('/states/:state/population', cors(), async (req, res) => {
-    await getStatesWithFunFacts();
 
     let filteredArray
     const stateCode = req.params.state.toUpperCase();
@@ -364,7 +352,6 @@ app.get('/states/:state/population', cors(), async (req, res) => {
 });
 
 app.get('/states/:state/admission', cors(), async (req, res) => {
-    await getStatesWithFunFacts();
 
     let filteredArray
     const stateCode = req.params.state.toUpperCase();
