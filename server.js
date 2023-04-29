@@ -88,8 +88,9 @@ async function getStatesWithFunFacts() {
     const statesData = require('./statesData.json');
     const stateCodes = statesData.map((state) => state.code);
 
+    console.log("here")
     const dbStates = await Promise.all(
-        stateCodes.map((stateCode) => States.findOne({ stateCode }))
+        stateCodes.map((stateCode) => States.findOne({ stateCode }, null, { maxTimeMS: 30000 }))
     );
     statesWithFunFacts = statesData.map((state, index) => {
         const dbState = dbStates[index];
@@ -99,7 +100,6 @@ async function getStatesWithFunFacts() {
 }
 
 async function run() {
-    console.log('i run first')
     await getStatesWithFunFacts();
 }
 run().catch(console.dir);
@@ -112,11 +112,16 @@ app.get('/', cors(), (req, res) => {
 
 app.get('/states/', cors(), async (req, res) => {
     try {
+        console.log('/states/')
         const path = req.path;
         let filteredArray;
 
         if (path === '/states/') {
+            console.log('statesWithFunFacts > ' + statesWithFunFacts)
+
             filteredArray = statesWithFunFacts;
+            console.log('filteredArray > ' + filteredArray)
+
             if (path === '/states/' && req.query.contig === 'true') {
                 filteredArray = filteredArray.filter(state => state.code !== 'AK' && state.code !== 'HI');
             } else if (path === '/states/' && req.query.contig === 'false') {
@@ -130,8 +135,6 @@ app.get('/states/', cors(), async (req, res) => {
         const formattedData = JSON.stringify(filteredArray, null, 2);
         res.set('Content-Type', 'application/json');
         res.send(formattedData);
-        done();
-
     } catch (err) {
         console.error(err);
         res.status(500).send('Server Error');
@@ -139,9 +142,10 @@ app.get('/states/', cors(), async (req, res) => {
 });
 
 
-app.get('/states/:state', cors(), async (req, res, done) => {
+app.get('/states/:state', cors(), async (req, res) => {
     let filteredArray
     const stateCode = req.params.state.toUpperCase();
+
     if ((stateCode in stateAbbreviations)) {
 
         filteredArray = await statesWithFunFacts.find(state => state.code === stateCode);
@@ -150,14 +154,11 @@ app.get('/states/:state', cors(), async (req, res, done) => {
             const formattedData = JSON.stringify(filteredArray, null, 2);
             res.set('Content-Type', 'application/json');
             res.send(formattedData);
-            done();
         } else {
             res.status(404).send('State not found');
-            done();
         }
     } else {
         res.status(404).json({ "message": "Invalid state abbreviation parameter" });
-        done();
     }
 });
 
@@ -165,9 +166,9 @@ app.get('/states/:state', cors(), async (req, res, done) => {
 
 
 app.get('/states/:state/funfact', cors(), async (req, res) => {
-
+    const list = statesWithFunFacts;
     const stateCode = req.params.state.toUpperCase();
-    const stateData = await statesWithFunFacts.find(state => state.code === stateCode);
+    const stateData = await list.find(state => state.code === stateCode);
     if (stateData) {
         if ('funfacts' in stateData) {
 
@@ -176,7 +177,6 @@ app.get('/states/:state/funfact', cors(), async (req, res) => {
                 const response = { funfact: formattedData };
                 res.set('Content-Type', 'application/json');
                 res.send(response);
-                done();
 
             }
         }
@@ -187,7 +187,6 @@ app.get('/states/:state/funfact', cors(), async (req, res) => {
 
     } else {
         res.status(404).json({ "message": "Invalid state abbreviation parameter" });
-        done();
     }
 
 });
@@ -195,7 +194,6 @@ app.get('/states/:state/funfact', cors(), async (req, res) => {
 //POSTs
 app.post('/states/:state/funfact', cors(), async (req, res) => {
     try {
-        connectToDB();
         console.log(req.body.funfacts);
         const stateCode = req.params.state.toUpperCase();
         const newFunFacts = req.body.funfacts;
@@ -215,7 +213,6 @@ app.post('/states/:state/funfact', cors(), async (req, res) => {
 
         // Return the updated or new state document as the response
         res.status(201).send(stateData);
-        done();
 
     } catch (err) {
         console.error(err);
@@ -286,6 +283,7 @@ app.delete('/states/:state/funfact', cors(), async (req, res) => {
 });
 
 app.get('/states/:state/capital', cors(), async (req, res) => {
+    await getStatesWithFunFacts();
 
     let filteredArray
     const stateCode = req.params.state.toUpperCase();
@@ -308,6 +306,7 @@ app.get('/states/:state/capital', cors(), async (req, res) => {
 });
 
 app.get('/states/:state/nickname', cors(), async (req, res) => {
+    await getStatesWithFunFacts();
 
     let filteredArray
     const stateCode = req.params.state.toUpperCase();
@@ -330,6 +329,7 @@ app.get('/states/:state/nickname', cors(), async (req, res) => {
 });
 
 app.get('/states/:state/population', cors(), async (req, res) => {
+    await getStatesWithFunFacts();
 
     let filteredArray
     const stateCode = req.params.state.toUpperCase();
@@ -339,7 +339,7 @@ app.get('/states/:state/population', cors(), async (req, res) => {
     if (state) {
         const formattedData = JSON.stringify({
             state: state.state,
-            population: state.population
+            population: state.population.toLocaleString()
         }, null);
         res.set('Content-Type', 'application/json');
         res.send(formattedData);
@@ -352,6 +352,7 @@ app.get('/states/:state/population', cors(), async (req, res) => {
 });
 
 app.get('/states/:state/admission', cors(), async (req, res) => {
+    await getStatesWithFunFacts();
 
     let filteredArray
     const stateCode = req.params.state.toUpperCase();
