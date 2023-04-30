@@ -238,7 +238,8 @@ app.post('/states/:state/funfact', async (req, res) => {
 app.patch('/states/:state/funfact', cors(), async (req, res) => {
     try {
         const stateCode = req.params.state.toUpperCase();
-        const { index, funfact } = req.body;
+        const funfact = req.body.funfacts;
+        const index = req.body.index;
 
         if (!funfact) {
             res.status(400).send({ message: 'State fun facts index required' });
