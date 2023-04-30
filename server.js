@@ -243,11 +243,11 @@ app.patch('/states/:state/funfact', async (req, res) => {
 
 
         if (!funfact) {
-            res.status(400).send({ message: 'State fun facts value required' });
+            res.status(400).send({ message: 'State fun fact value required' });
             return;
         }
         if (!index) {
-            res.status(400).send({ message: 'State fun facts index required' });
+            res.status(400).send({ message: 'State fun fact index required' });
             return;
         }
         if (!statesWithFunFacts) {
@@ -268,7 +268,7 @@ app.patch('/states/:state/funfact', async (req, res) => {
                         if (zeroBasedIndex >= 0 && zeroBasedIndex < funfacts.length) {
                             funfacts[zeroBasedIndex] = funfact;
                         } else {
-                            return res.status(400).send({ message: 'No Fun Fact found at that index for ' + stateData.state });
+                            return res.status(400).send({ message: 'No Fun Fact found at that index for ' + stateInfo.state });
                         }
 
                         // Save the updated state document to the database
