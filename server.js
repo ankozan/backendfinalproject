@@ -240,10 +240,16 @@ app.patch('/states/:state/funfact', cors(), async (req, res) => {
         const stateCode = req.params.state.toUpperCase();
         const { index, funfact } = req.body;
 
-        // Check if the required properties are present in the request body
-        if (!index || !funfact) {
-            return res.status(400).send('Index and funfact are required');
+        if (!funfact) {
+            res.status(400).send({ message: 'State fun facts index required' });
+            return;
         }
+        if (!index) {
+            res.status(400).send({ message: 'State fun facts value required' });
+            return;
+        }
+
+        // Check if the required properties are present in the request body
 
         // Convert the index to zero-based by subtracting 1
         const zeroBasedIndex = index - 1;
@@ -253,7 +259,7 @@ app.patch('/states/:state/funfact', cors(), async (req, res) => {
 
         // If state is not found, return a 404 error
         if (!stateData) {
-            return res.status(404).send('State not found');
+            res.status(400).json({ message: 'No Fun Facts found for ' + stateData.state });
         }
 
         // Replace the existing fun fact with the new one at the specified index
@@ -261,7 +267,7 @@ app.patch('/states/:state/funfact', cors(), async (req, res) => {
         if (zeroBasedIndex >= 0 && zeroBasedIndex < funfacts.length) {
             funfacts[zeroBasedIndex] = funfact;
         } else {
-            return res.status(400).send('Invalid index');
+            return res.status(400).send({ message: 'No Fun Fact found at that index for ' + stateData.state });
         }
 
         // Save the updated state document to the database
