@@ -242,11 +242,11 @@ app.patch('/states/:state/funfact', cors(), async (req, res) => {
         const index = req.body.index;
 
         if (!funfact) {
-            res.status(400).send({ message: 'State fun facts index required' });
+            res.status(400).send({ message: 'State fun facts value required' });
             return;
         }
         if (!index) {
-            res.status(400).send({ message: 'State fun facts value required' });
+            res.status(400).send({ message: 'State fun facts index required' });
             return;
         }
 
