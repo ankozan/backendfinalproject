@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 const whitelist = ['https://www.google.com', 'http://localhost:3000', 'https://dazzling-snickerdoodle-777101.netlify.app']
 const corsOptions = {
     origin: (origin, callback) => {
-        if (whitelist.indexOf(origin) !== -1) {
+        if (whitelist.indexOf(origin) !== -1 || !origin) {
             callback(null, true)
         }
         else {
@@ -99,7 +99,6 @@ async function getStatesWithFunFacts() {
     const statesData = require('./statesData.json');
     const stateCodes = statesData.map((state) => state.code);
 
-    console.log("here")
     const dbStates = await Promise.all(
         stateCodes.map((stateCode) => States.findOne({ stateCode }, null, { maxTimeMS: 30000 }))
     );
@@ -121,17 +120,14 @@ app.get('/', cors(), (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.get('/states/', cors(), async (req, res) => {
+app.get('/states/', async (req, res) => {
     try {
-        console.log('/states/')
         const path = req.path;
         let filteredArray;
 
         if (path === '/states/') {
-            console.log('statesWithFunFacts > ' + statesWithFunFacts)
 
             filteredArray = statesWithFunFacts;
-            console.log('filteredArray > ' + filteredArray)
 
             if (path === '/states/' && req.query.contig === 'true') {
                 filteredArray = filteredArray.filter(state => state.code !== 'AK' && state.code !== 'HI');
@@ -205,7 +201,6 @@ app.get('/states/:state/funfact', cors(), async (req, res) => {
 //POSTs
 app.post('/states/:state/funfact', async (req, res) => {
     try {
-        console.log(req.body.funfacts);
         const stateCode = req.params.state.toUpperCase();
         const newFunFacts = req.body.funfacts;
 
@@ -296,7 +291,6 @@ app.get('/states/:state/capital', cors(), async (req, res) => {
 
     let filteredArray
     const stateCode = req.params.state.toUpperCase();
-    console.log(stateCode);
     let state = await statesWithFunFacts.find(state => state.code === stateCode);
 
     if (state) {
@@ -317,7 +311,6 @@ app.get('/states/:state/nickname', cors(), async (req, res) => {
 
     let filteredArray
     const stateCode = req.params.state.toUpperCase();
-    console.log(stateCode);
     let state = await statesWithFunFacts.find(state => state.code === stateCode);
 
     if (state) {
@@ -338,7 +331,6 @@ app.get('/states/:state/population', cors(), async (req, res) => {
 
     let filteredArray
     const stateCode = req.params.state.toUpperCase();
-    console.log(stateCode);
     let state = await statesWithFunFacts.find(state => state.code === stateCode);
 
     if (state) {
@@ -359,7 +351,6 @@ app.get('/states/:state/admission', cors(), async (req, res) => {
 
     let filteredArray
     const stateCode = req.params.state.toUpperCase();
-    console.log(stateCode);
     let state = await statesWithFunFacts.find(state => state.code === stateCode);
 
     if (state) {
