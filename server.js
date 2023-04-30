@@ -203,6 +203,14 @@ app.post('/states/:state/funfact', async (req, res) => {
     try {
         const stateCode = req.params.state.toUpperCase();
         const newFunFacts = req.body.funfacts;
+        if (!newFunFacts) {
+            res.status(400).send({ message: 'State fun facts value required' });
+            return;
+        }
+        if (!Array.isArray(newFunFacts)) {
+            res.status(400).send({ message: 'State fun facts value must be an array' });
+            return;
+        }
 
         // Find the state in the database
         let stateData = await States.findOne({ stateCode });
@@ -219,6 +227,7 @@ app.post('/states/:state/funfact', async (req, res) => {
 
         // Return the updated or new state document as the response
         res.status(200).send(stateData);
+        await getStatesWithFunFacts();
 
     } catch (err) {
         console.error(err);
