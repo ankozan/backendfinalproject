@@ -247,7 +247,7 @@ app.patch('/states/:state/funfact', async (req, res) => {
             return;
         }
         if (!index) {
-            res.status(400).send({ message: 'State fun fact index required' });
+            res.status(400).send({ message: 'State fun fact index value required' });
             return;
         }
         if (!statesWithFunFacts) {
