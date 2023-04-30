@@ -235,11 +235,12 @@ app.post('/states/:state/funfact', async (req, res) => {
     }
 });
 
-app.patch('/states/:state/funfact', cors(), async (req, res) => {
+app.patch('/states/:state/funfact', async (req, res) => {
     try {
         const stateCode = req.params.state.toUpperCase();
-        const funfact = req.body.funfacts;
+        const funfact = req.body.funfact;
         const index = req.body.index;
+
 
         if (!funfact) {
             res.status(400).send({ message: 'State fun facts value required' });
@@ -249,37 +250,49 @@ app.patch('/states/:state/funfact', cors(), async (req, res) => {
             res.status(400).send({ message: 'State fun facts index required' });
             return;
         }
+        if (!statesWithFunFacts) {
+            await getStatesWithFunFacts();
+        }
+        const list = statesWithFunFacts;
 
-        // Check if the required properties are present in the request body
+        const stateInfo = await list.find(state => state.code === stateCode);
+        if (stateInfo) {
 
-        // Convert the index to zero-based by subtracting 1
-        const zeroBasedIndex = index - 1;
+            const zeroBasedIndex = index - 1;
+            const stateData = await States.findOne({ stateCode });
+            if (stateData) {
+                if ('funfacts' in stateData) {
+                    if (stateData.funfacts.length > 0) {
+                        // Replace the existing fun fact with the new one at the specified index
+                        const funfacts = stateData.funfacts;
+                        if (zeroBasedIndex >= 0 && zeroBasedIndex < funfacts.length) {
+                            funfacts[zeroBasedIndex] = funfact;
+                        } else {
+                            return res.status(400).send({ message: 'No Fun Fact found at that index for ' + stateData.state });
+                        }
 
-        // Find the state in the database
-        const stateData = await States.findOne({ stateCode });
+                        // Save the updated state document to the database
+                        const updatedState = await stateData.save();
 
-        // If state is not found, return a 404 error
-        if (!stateData) {
-            res.status(400).json({ message: 'No Fun Facts found for ' + stateData.state });
+                        // Return the updated state document as the response
+                        res.send(updatedState);
+                        reuturn;
+                    }
+                }
+
+            }
+            else {
+                res.status(400).json({ message: 'No Fun Facts found for ' + stateInfo.state });
+            }
+
+        }
+        else {
+            res.status(404).json({ "message": "Invalid state abbreviation parameter" });
         }
 
-        // Replace the existing fun fact with the new one at the specified index
-        const funfacts = stateData.funfacts;
-        if (zeroBasedIndex >= 0 && zeroBasedIndex < funfacts.length) {
-            funfacts[zeroBasedIndex] = funfact;
-        } else {
-            return res.status(400).send({ message: 'No Fun Fact found at that index for ' + stateData.state });
-        }
-
-        // Save the updated state document to the database
-        const updatedState = await stateData.save();
-
-        // Return the updated state document as the response
-        res.send(updatedState);
 
     } catch (err) {
-        console.error(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).send(err);
     }
 });
 
