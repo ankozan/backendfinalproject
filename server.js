@@ -270,7 +270,7 @@ app.patch('/states/:state/funfact', async (req, res) => {
 
                         // Return the updated state document as the response
                         res.send(updatedState);
-                        reuturn;
+                        return;
                     }
                 }
 
