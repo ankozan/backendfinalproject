@@ -107,7 +107,6 @@ async function getStatesWithFunFacts() {
         const funFacts = dbState ? dbState.funfacts : [];
         return funFacts.length > 0 ? { ...state, funfacts: funFacts } : state;
     });
-    console.log('statesWithFunFacts is REFRESHED')
 }
 
 async function run() {
@@ -158,7 +157,6 @@ app.get('/states/:state', cors(), async (req, res) => {
         if (filteredArray) {
             const formattedData = JSON.stringify(filteredArray, null, 2);
             res.set('Content-Type', 'application/json');
-            console.log(formattedData);
             res.send(formattedData);
         } else {
             res.status(404).send('State not found');
