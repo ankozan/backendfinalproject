@@ -393,7 +393,7 @@ app.get('/states/:state/population', cors(), async (req, res) => {
     }
 });
 
-app.get('/states/:state/admission', cors(), async (req, res) => {
+app.get('/states/:state/admission', async (req, res) => {
     await getStatesWithFunFacts();
 
     let filteredArray
@@ -411,6 +411,9 @@ app.get('/states/:state/admission', cors(), async (req, res) => {
     } else {
         res.status(404).json({ "message": "Invalid state abbreviation parameter" });
     }
+    setTimeout(() => {
+        res.status(500).json({ "message": "Request timed out" });
+    }, 2000);
 });
 
 app.get('*', cors(), (req, res) => {
