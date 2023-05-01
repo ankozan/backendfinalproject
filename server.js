@@ -270,6 +270,7 @@ app.patch('/states/:state/funfact', async (req, res) => {
 
                         // Return the updated state document as the response
                         res.send(updatedState);
+                        await getStatesWithFunFacts();
                         return;
                     }
                 }
@@ -306,6 +307,7 @@ app.delete('/states/:state/funfact', cors(), async (req, res) => {
         const zeroBasedIndex = index - 1;
         const stateData = await States.findOne({ stateCode });
         if (stateData) {
+            console.log(stateData)
             if ('funfacts' in stateData) {
                 if (zeroBasedIndex < stateData.funfacts.length) {
                     stateData.funfacts.splice(zeroBasedIndex, 1);
