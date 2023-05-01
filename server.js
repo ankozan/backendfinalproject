@@ -411,9 +411,6 @@ app.get('/states/:state/admission', async (req, res) => {
     } else {
         res.status(404).json({ "message": "Invalid state abbreviation parameter" });
     }
-    setTimeout(() => {
-        res.status(500).json({ "message": "Request timed out" });
-    }, 2000);
 });
 
 app.get('*', cors(), (req, res) => {
