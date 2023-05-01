@@ -220,8 +220,8 @@ app.post('/states/:state/funfact', async (req, res) => {
         stateData = await stateData.save();
 
         // Return the updated or new state document as the response
-        res.status(200).send(stateData);
         await getStatesWithFunFacts();
+        res.status(200).send(stateData);
 
     } catch (err) {
         console.error(err);
@@ -270,7 +270,7 @@ app.patch('/states/:state/funfact', async (req, res) => {
 
                         // Return the updated state document as the response
                         res.send(updatedState);
-                        await getStatesWithFunFacts();
+
                         return;
                     }
                 }
