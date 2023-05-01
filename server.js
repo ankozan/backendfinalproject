@@ -152,11 +152,8 @@ app.get('/states/', async (req, res) => {
 app.get('/states/:state', cors(), async (req, res) => {
     let filteredArray
     const stateCode = req.params.state.toUpperCase();
-
     if ((stateCode in stateAbbreviations)) {
-
         filteredArray = await statesWithFunFacts.find(state => state.code === stateCode);
-
         if (filteredArray) {
             const formattedData = JSON.stringify(filteredArray, null, 2);
             res.set('Content-Type', 'application/json');
@@ -168,9 +165,6 @@ app.get('/states/:state', cors(), async (req, res) => {
         res.status(404).json({ "message": "Invalid state abbreviation parameter" });
     }
 });
-
-
-
 
 app.get('/states/:state/funfact', cors(), async (req, res) => {
     const list = statesWithFunFacts;
@@ -334,7 +328,6 @@ app.delete('/states/:state/funfact', cors(), async (req, res) => {
 });
 
 app.get('/states/:state/capital', cors(), async (req, res) => {
-    await getStatesWithFunFacts();
 
     let filteredArray
     const stateCode = req.params.state.toUpperCase();
@@ -354,7 +347,6 @@ app.get('/states/:state/capital', cors(), async (req, res) => {
 });
 
 app.get('/states/:state/nickname', cors(), async (req, res) => {
-    await getStatesWithFunFacts();
 
     let filteredArray
     const stateCode = req.params.state.toUpperCase();
@@ -374,7 +366,6 @@ app.get('/states/:state/nickname', cors(), async (req, res) => {
 });
 
 app.get('/states/:state/population', cors(), async (req, res) => {
-    await getStatesWithFunFacts();
 
     let filteredArray
     const stateCode = req.params.state.toUpperCase();
@@ -394,8 +385,6 @@ app.get('/states/:state/population', cors(), async (req, res) => {
 });
 
 app.get('/states/:state/admission', async (req, res) => {
-    await getStatesWithFunFacts();
-
     let filteredArray
     const stateCode = req.params.state.toUpperCase();
     let state = await statesWithFunFacts.find(state => state.code === stateCode);
