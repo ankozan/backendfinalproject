@@ -269,6 +269,7 @@ app.patch('/states/:state/funfact', async (req, res) => {
                         const updatedState = await stateData.save();
 
                         // Return the updated state document as the response
+                        await getStatesWithFunFacts();
                         res.send(updatedState);
 
                         return;
