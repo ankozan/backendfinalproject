@@ -149,7 +149,7 @@ app.get('/states/', async (req, res) => {
 });
 
 
-app.get('/states/:state', cors(), async (req, res) => {
+app.get('/states/:state', async (req, res) => {
     let filteredArray
     const stateCode = req.params.state.toUpperCase();
     if ((stateCode in stateAbbreviations)) {
@@ -166,7 +166,7 @@ app.get('/states/:state', cors(), async (req, res) => {
     }
 });
 
-app.get('/states/:state/funfact', cors(), async (req, res) => {
+app.get('/states/:state/funfact', async (req, res) => {
     const list = statesWithFunFacts;
     const stateCode = req.params.state.toUpperCase();
     const stateData = await list.find(state => state.code === stateCode);
