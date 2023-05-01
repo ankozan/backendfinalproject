@@ -299,20 +299,38 @@ app.patch('/states/:state/funfact', async (req, res) => {
 app.delete('/states/:state/funfact', cors(), async (req, res) => {
     const stateCode = req.params.state.toUpperCase();
     const index = req.body.index;
-    if (!index || index <= 0 || index > stateData.funfacts.length) {
-        return res.status(400).json({ message: 'State fun fact index value required' });
+    const list = statesWithFunFacts;
+
+    if (!index) {
+        res.status(400).send({ message: 'State fun fact index value required' });
+        return;
     }
-    const stateData = await States.findOne({ stateCode });
-    if (!stateData) {
-        return res.status(404).send('State not found');
+    const stateInfo = await list.find(state => state.code === stateCode);
+
+    if (stateInfo) {
+
+        const zeroBasedIndex = index - 1;
+        const stateData = await States.findOne({ stateCode });
+        if (stateData) {
+            if ('funfacts' in stateData) {
+                if (zeroBasedIndex < stateData.funfacts.length) {
+                    stateData.funfacts.splice(zeroBasedIndex, 1);
+                    const updatedState = await stateData.save();
+                    res.status(200).send(updatedState);
+                }
+                else {
+                    return res.status(400).json({ message: 'No Fun Fact found at that index for ' + stateInfo.state });
+
+                }
+            }
+        } else {
+            res.status(400).json({ message: 'No Fun Facts found for ' + stateInfo.state });
+        }
+
     }
-
-
-    stateData.funfacts.splice(index - 1, 1);
-    const updatedState = await stateData.save();
-
-    res.status(200).send(updatedState);
-
+    else {
+        res.status(404).json({ "message": "Invalid state abbreviation parameter" });
+    }
 });
 
 app.get('/states/:state/capital', cors(), async (req, res) => {
